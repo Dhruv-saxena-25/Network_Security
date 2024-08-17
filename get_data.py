@@ -61,7 +61,7 @@ class NetworkDataExtract():
 if __name__ == '__main__':
     DATA_FILE_PATH="Network_Data\\NetworkData.csv"
     DATABASE_NAME="Network"
-    COLLECTION_NAME="Cluster0"
+    COLLECTION_NAME="data"
     networkdata=NetworkDataExtract()
     records = networkdata.csv_to_json_convertor(DATA_FILE_PATH)
     inserted_record=networkdata.pushing_data_to_mongodb(records,DATABASE_NAME,COLLECTION_NAME)
