@@ -1,0 +1,11 @@
+pandas
+python-dotenv
+pymongo
+scikit-learn
+dill
+pyyaml
+imblearn
+xgboost
+certifi
+
+-e .
