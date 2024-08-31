@@ -5,6 +5,8 @@ import sys
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logger.logger import logging
 
+## Importing S3 related credentials
+
 from networksecurity.cloud.s3_syncer import S3Sync
 from networksecurity.constant.training_pipeline import TRAINING_BUCKET_NAME
 from networksecurity.constant.training_pipeline import SAVED_MODEL_DIR
@@ -41,6 +43,7 @@ class TrainingPipeline:
     is_pipeline_running = False
     def __init__(self):
         self.training_pipeline_config = TrainingPipelineConfig()
+        self.s3_sync = S3Sync()
             
     def start_data_ingestion(self)->DataIngestionArtifact:
         try:
@@ -139,22 +142,20 @@ class TrainingPipeline:
         except Exception as e:
             raise NetworkSecurityException(e,sys)
 
-            
-        except Exception as e:
-            raise NetworkSecurityException(e, sys)
 
     def run_pipeline(self):
         try:
             TrainingPipeline.is_pipeline_running = True
             data_ingestion_artifact:DataIngestionArtifact=self.start_data_ingestion()
-            print(data_ingestion_artifact)
+            # print(data_ingestion_artifact)
             data_validation_artifact=self.start_data_validation(data_ingestion_artifact=data_ingestion_artifact)
-            print(data_validation_artifact)
+            # print(data_validation_artifact)
             data_transformation_artifact = self.start_data_transformation(data_validation_artifact=data_validation_artifact)
             model_trainer_artifact: ModelTrainerArtifact = self.start_model_trainer(data_transformation_artifact=data_transformation_artifact)
             model_eval_artifact = self.start_model_evaluation(data_validation_artifact, model_trainer_artifact)
             if not model_eval_artifact.is_model_accepted:
-                raise Exception("Trained model is not better than the best model")
+                # raise Exception("Trained model is not better than the best model")
+                print("Trained model is not better than the best model")        
             model_pusher_artifact = self.start_model_pusher(model_eval_artifact)
             TrainingPipeline.is_pipeline_running=False
             self.sync_artifact_dir_to_s3()

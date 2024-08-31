@@ -9,8 +9,8 @@ load_dotenv()
 mongo_db_url = os.getenv("MONGODB_URL_KEY")
 print(mongo_db_url)
 
-AWS_ACCESS_KEY_ID=os.getenv("AWS_ACCESS_KEY_ID_ENV_KEY")
-AWS_SECRET_ACCESS_KEY=os.getenv("AWS_SECRET_ACCESS_KEY_ENV_KEY")
+AWS_ACCESS_KEY_ID=os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY=os.getenv("AWS_SECRET_ACCESS_KEY")
 
 os.environ["AWS_ACCESS_KEY_ID"]=AWS_ACCESS_KEY_ID
 os.environ["AWS_SECRET_ACCESS_KEY"]=AWS_SECRET_ACCESS_KEY
@@ -31,6 +31,7 @@ from fastapi.responses import Response
 from starlette.responses import RedirectResponse
 import pandas as pd
 
+
 client = pymongo.MongoClient(mongo_db_url, tlsCAFile=ca)
 
 database = client[DATA_INGESTION_DATABASE_NAME]
@@ -44,7 +45,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"],       
 )
 
 @app.get("/", tags=["authentication"])
@@ -69,14 +70,14 @@ async def predict_route(request:Request,file: UploadFile = File(...)):
         pass
     except Exception as e:
             raise NetworkSecurityException(e,sys)
-'''
+
 def main():
     try:
         training_pipeline = TrainingPipeline()
         training_pipeline.run_pipeline() 
     except Exception as e:
             raise NetworkSecurityException(e,sys)
-
+'''
                
 if __name__=="__main__":
     app_run(app, host="localhost", port=8000)

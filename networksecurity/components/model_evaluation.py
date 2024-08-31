@@ -80,7 +80,7 @@ class ModelEvaluation:
             else:
                 is_model_accepted=False
 
-            print(is_model_accepted, improved_accuracy, latest_model_path, train_model_file_path, trained_metric, latest_metric)
+            # print(is_model_accepted, improved_accuracy, latest_model_path, train_model_file_path, trained_metric, latest_metric)
             model_evaluation_artifact = ModelEvaluationArtifact(
                     is_model_accepted=is_model_accepted, 
                     improved_accuracy=improved_accuracy, 

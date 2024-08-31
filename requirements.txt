@@ -1,11 +1,19 @@
-pandas
+
 python-dotenv
+pandas
+numpy
 pymongo
+certifi
+pymongo[srv]
 scikit-learn
 dill
 pyyaml
-imblearn
 xgboost
-certifi
+fastapi
+uvicorn
+ipykernel
+apache-airflow
+mlflow
+dvc
 
 -e .
