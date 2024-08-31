@@ -5,6 +5,10 @@ import sys
 from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logger.logger import logging
 
+from networksecurity.cloud.s3_syncer import S3Sync
+from networksecurity.constant.training_pipeline import TRAINING_BUCKET_NAME
+from networksecurity.constant.training_pipeline import SAVED_MODEL_DIR
+
 #importing components
 from networksecurity.components.data_ingestion import DataIngestion
 from networksecurity.components.data_validation import DataValidation
@@ -38,7 +42,7 @@ class TrainingPipeline:
     def __init__(self):
         self.training_pipeline_config = TrainingPipelineConfig()
             
-    def start_data_ingestion(self):
+    def start_data_ingestion(self)->DataIngestionArtifact:
         try:
             self.data_ingestion_config = DataIngestionConfig(training_pipeline_config=self.training_pipeline_config)
             logging.info("Starting data ingestion")
@@ -62,7 +66,7 @@ class TrainingPipeline:
         except Exception as e:
             raise NetworkSecurityException(e, sys)
         
-    def start_data_transformation(self, data_validation_artifact: DataValidationArtifact):
+    def start_data_transformation(self, data_validation_artifact: DataValidationArtifact)->DataTransformationArtifact:
         try:
             data_transformation_config = DataTransformationConfig(training_pipeline_config=self.training_pipeline_config)
             data_transformation = DataTransformation(data_validation_artifact=data_validation_artifact,
@@ -102,7 +106,7 @@ class TrainingPipeline:
         
     
     def start_model_evaluation(self, data_validation_artifact:DataValidationArtifact,
-                                 model_trainer_artifact:ModelTrainerArtifact):
+                                 model_trainer_artifact:ModelTrainerArtifact)-> ModelEvaluationArtifact:
         try:
             model_eval_config: ModelEvaluationConfig = ModelEvaluationConfig(training_pipeline_config= self.training_pipeline_config)
             model_eval = ModelEvaluation(model_eval_config, data_validation_artifact, model_trainer_artifact)
@@ -112,13 +116,30 @@ class TrainingPipeline:
         except Exception as e:
             raise NetworkSecurityException(e, sys)
     
-    def start_model_pusher(self, model_eval_artifact:ModelEvaluationArtifact):
+    def start_model_pusher(self, model_eval_artifact:ModelEvaluationArtifact)-> ModelPusherArtifact:
         try:
             model_pusher_config = ModelPusherConfig(training_pipeline_config=self.training_pipeline_config)
             model_pusher = ModelPusher(model_pusher_config, model_eval_artifact)
             model_pusher_artifact = model_pusher.initiate_model_pusher()
             return model_pusher_artifact
 
+        except Exception as e:
+            raise NetworkSecurityException(e, sys)
+    def sync_artifact_dir_to_s3(self):
+        try:
+            aws_bucket_url = f"s3://{TRAINING_BUCKET_NAME}/artifact/{self.training_pipeline_config.timestamp}"
+            self.s3_sync.sync_folder_to_s3(folder = self.training_pipeline_config.artifact_dir,aws_bucket_url=aws_bucket_url)
+        except Exception as e:
+            raise NetworkSecurityException(e,sys)
+            
+    def sync_saved_model_dir_to_s3(self):
+        try:
+            aws_bucket_url = f"s3://{TRAINING_BUCKET_NAME}/{SAVED_MODEL_DIR}"
+            self.s3_sync.sync_folder_to_s3(folder = SAVED_MODEL_DIR,aws_bucket_url=aws_bucket_url)
+        except Exception as e:
+            raise NetworkSecurityException(e,sys)
+
+            
         except Exception as e:
             raise NetworkSecurityException(e, sys)
 
@@ -135,8 +156,14 @@ class TrainingPipeline:
             if not model_eval_artifact.is_model_accepted:
                 raise Exception("Trained model is not better than the best model")
             model_pusher_artifact = self.start_model_pusher(model_eval_artifact)
-        
-            
+            TrainingPipeline.is_pipeline_running=False
+            self.sync_artifact_dir_to_s3()
+            self.sync_saved_model_dir_to_s3()
         except Exception as e:
-            raise NetworkSecurityException(e, sys)
+            self.sync_artifact_dir_to_s3()
+            TrainingPipeline.is_pipeline_running=False
+            raise NetworkSecurityException(e,sys)
+    
+
+    
         
