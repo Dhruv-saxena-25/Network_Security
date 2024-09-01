@@ -14,6 +14,7 @@ AWS_SECRET_ACCESS_KEY=os.getenv("AWS_SECRET_ACCESS_KEY")
 
 os.environ["AWS_ACCESS_KEY_ID"]=AWS_ACCESS_KEY_ID
 os.environ["AWS_SECRET_ACCESS_KEY"]=AWS_SECRET_ACCESS_KEY
+
 import pymongo
 
 from networksecurity.constant.training_pipeline import DATA_INGESTION_COLLECTION_NAME
@@ -52,7 +53,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],       
+    allow_headers=["*"],
 )
 
 @app.get("/", tags=["authentication"])
@@ -70,6 +71,7 @@ async def train_route():
     except Exception as e:
             raise NetworkSecurityException(e,sys)
     
+
 @app.post("/predict")
 async def predict_route(request: Request,file: UploadFile = File(...)):
     try:
@@ -89,14 +91,14 @@ async def predict_route(request: Request,file: UploadFile = File(...)):
         
     except Exception as e:
             raise NetworkSecurityException(e,sys)
-'''
-def main():
+
+"""def main():
     try:
         training_pipeline = TrainingPipeline()
-        training_pipeline.run_pipeline() 
+        model = training_pipeline.run_pipeline(model_dir=SAVED_MODEL_DIR) 
     except Exception as e:
-            raise NetworkSecurityException(e,sys)
-'''
+            raise NetworkSecurityException(e,sys)"""
+
                
 if __name__=="__main__":
     app_run(app, host="localhost", port=8000)
