@@ -22,7 +22,7 @@ with DAG(
 
     
     def download_files(**kwargs):
-        bucket_name = "my-network-datasource"
+        bucket_name = "network-datasource-prediction"
         input_dir = "/app/input_files"
         #creating directory
         os.makedirs(input_dir,exist_ok=True)
