@@ -1,7 +1,7 @@
 ## AWS Cloud Setup
 
 
-1) IAM 
+1) Search IAM 
 - Click on Users:
     - Go to `create user`. 
     - Enter the `user name`.
@@ -16,5 +16,12 @@
     - AWS Secret Access Key [****************P184]:
     - Default region name [us-east-1]:
     - Default output format [None]:
-2) S3
-- 
+2) Search S3
+- Click on `Create bucket`.
+- Now add the `Bucket name` and keep all other information as it is.
+    - **Bucket name must be unique**
+- Then click on `Create bucket`. 
+
+
+
+
