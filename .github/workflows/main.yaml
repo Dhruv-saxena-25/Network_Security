@@ -89,7 +89,7 @@ jobs:
 
       # - name: Stop and remove network container if running
       #   run: |
-      #    docker ps -q --filter "name=network" | grep -q . && docker stop network && docker rm -fv network
+      #    docker ps -q --filter "name=networksecurity" | grep -q . && docker stop networksecurity && docker rm -fv network
        
       - name: Run Docker Image to serve users
         run: |
