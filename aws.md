@@ -1,7 +1,7 @@
 ## AWS Cloud Setup
 
 
-1) Search for IAM 
+# 1 Search for IAM 
 - Click on Users:
     - Go to `create user`. 
     - Enter the `user name`.
@@ -16,25 +16,25 @@
     - AWS Secret Access Key [****************P184]:
     - Default region name [us-east-1]:
     - Default output format [None]:
-2) Search for S3
+# 2 Search for S3
 - Click on `Create bucket`.
 - Now add the `Bucket name` and keep all other information as it is.
     - **Bucket name must be globally unique.** 
 - Then click on `Create bucket`. 
 
-3) Search for ECR
+# 3 Search for ECR
 - Click on `Create repository`.
 - Enter the `Repository name`.
 - Click on `Create`.
 
 
-4) EC2 
+# 4 EC2 
  - 
 
 
 
 
-5) Github Setup `Actions secrets and variables`.
+# 5 Github Setup `Actions secrets and variables`.
 - Add `secrets` to your repository.
     - **AWS_ACCESS_KEY_ID**:
     - **AWS_DEFAULT_REGION**:
@@ -45,7 +45,7 @@
     - **MONGO_DB_URL**:
 
 
-6) Install Docker on EC2 Machine.
+# 6 Install Docker on EC2 Machine.
 
 
 ```bash
@@ -74,7 +74,7 @@ newgrp docker
 
 
 
-7) Github Setup `Runners`.
+# 7 Github Setup `Runners`.
 - Click on settings > Actions > Runners
 - Select `New selfosted runner`.
 - Select `Linux` for Runner image.
